@@ -2,6 +2,7 @@ package com.mind.goldminer;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 public class GoldMinerAndroid extends AndroidApplication {
@@ -9,6 +10,7 @@ public class GoldMinerAndroid extends AndroidApplication {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         initialize(new GoldMiner(), false);
     }
 }
