@@ -37,6 +37,7 @@ public class GoldMiner implements ApplicationListener{
 		Gdx.app.log("GoldMiner", "render()");
 		
 		if (screen.isDone()) {
+			screen.dispose();
 			switch (screen.nextState()) {		
 			case MainMenu:
 				screen = new MainMenu();

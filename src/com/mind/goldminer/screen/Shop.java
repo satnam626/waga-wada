@@ -45,4 +45,10 @@ public class Shop implements Screen{
 		return Gdx.input.isTouched();
 	}
 
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
