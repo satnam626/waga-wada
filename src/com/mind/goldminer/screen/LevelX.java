@@ -1,13 +1,6 @@
 package com.mind.goldminer.screen;
 
-import javax.microedition.khronos.opengles.GL10;
-
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 
 public class LevelX implements Screen{
 
@@ -21,7 +14,7 @@ public class LevelX implements Screen{
 							};
 	
 	private LevelState			curLevelState;
-	private LevelState			nextLevelState;
+//	private LevelState			nextLevelState;
 							
 //	private final SpriteBatch 	spriteBatch;
 //	private final Texture 		background;
@@ -35,7 +28,7 @@ public class LevelX implements Screen{
 		Gdx.app.log("LevelX", "LevelX()");
 //		nextState = ScreenState.Shop;
 		curLevelState = LevelState.Level_Loading;
-		nextLevelState = LevelState.Level_Play;
+//		nextLevelState = LevelState.Level_Play;
 		
 //		spriteBatch = new SpriteBatch();
 //		background = new Texture(Gdx.files.internal("data/background.png"));
@@ -67,12 +60,51 @@ public class LevelX implements Screen{
 //		spriteBatch.draw(miner, 400, 400);
 //		spriteBatch.draw(gold, 300, 200);
 //		spriteBatch.end();
+		switch (curLevelState) {
+		case Level_Loading:
+			renderLevelLoading();
+			break;
+		case Level_Play:
+			renderLevelPlay();
+			break;
+		case Level_Failed:
+			renderLevelFailed();
+			break;
+		case Level_Complete:
+			renderLevelComplete();
+			break;
+		case Level_Shop:
+			renderLevelShop();
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
 		Gdx.app.log("LevelX", "update()");
+		
+		switch (curLevelState) {
+		case Level_Loading:
+			updateLevelLoading();
+			break;
+		case Level_Play:
+			updateLevelPlay();
+			break;
+		case Level_Failed:
+			updateLevelFailed();
+			break;
+		case Level_Complete:
+			updateLevelComplete();
+			break;
+		case Level_Shop:
+			updateLevelShop();
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -102,4 +134,43 @@ public class LevelX implements Screen{
 		
 	}
 
+	private void updateLevelLoading() {
+		Gdx.app.log("LevelX", "updateLevelLoading()");
+	}
+	
+	private void updateLevelPlay() {
+		Gdx.app.log("LevelX", "updateLevelPlay()");
+	}
+
+	private void updateLevelFailed() {
+		Gdx.app.log("LevelX", "updateLevelFailed()");
+	}
+
+	private void updateLevelComplete() {
+		Gdx.app.log("LevelX", "updateLevelComplete()");
+	}
+
+	private void updateLevelShop() {
+		Gdx.app.log("LevelX", "updateLevelShop()");
+	}
+	
+	private void renderLevelLoading() {
+		Gdx.app.log("LevelX", "renderLevelLoading()");
+	}
+	
+	private void renderLevelPlay() {
+		Gdx.app.log("LevelX", "renderLevelPlay()");
+	}
+
+	private void renderLevelFailed() {
+		Gdx.app.log("LevelX", "renderLevelFailed()");
+	}
+
+	private void renderLevelComplete() {
+		Gdx.app.log("LevelX", "renderLevelComplete()");
+	}
+
+	private void renderLevelShop() {
+		Gdx.app.log("LevelX", "renderLevelShop()");
+	}
 }

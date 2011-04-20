@@ -19,5 +19,5 @@ public interface Screen {
 	public boolean isDone();
 	
 	public void dispose();
-	
+
 }
