@@ -6,15 +6,20 @@ public class LevelX implements Screen{
 
 	public ScreenState nextState;
 	
-	private enum LevelState { Level_Loading,
-							Level_Play, 
-							Level_Failed,
-							Level_Complete, 
-							Level_Shop,
+	private enum LevelState { LevelLoading,
+							LevelPlay, 
+							LevelFailed,
+							LevelComplete, 
+							LevelShop,
 							};
 	
 	private LevelState			curLevelState;
-//	private LevelState			nextLevelState;
+	private LevelState			nextLevelState;
+	
+	private boolean			isDone;
+	
+	private int 				levelPlayResult;
+	private int 				levelFailedChoice;
 							
 //	private final SpriteBatch 	spriteBatch;
 //	private final Texture 		background;
@@ -26,9 +31,14 @@ public class LevelX implements Screen{
 	
 	public LevelX() {
 		Gdx.app.log("LevelX", "LevelX()");
-//		nextState = ScreenState.Shop;
-		curLevelState = LevelState.Level_Loading;
-//		nextLevelState = LevelState.Level_Play;
+		nextState = ScreenState.MainMenu;
+		curLevelState = LevelState.LevelLoading;
+		nextLevelState = LevelState.LevelLoading;
+		
+		isDone = false;
+		
+		levelPlayResult = 0;
+		levelFailedChoice = 0;
 		
 //		spriteBatch = new SpriteBatch();
 //		background = new Texture(Gdx.files.internal("data/background.png"));
@@ -61,19 +71,19 @@ public class LevelX implements Screen{
 //		spriteBatch.draw(gold, 300, 200);
 //		spriteBatch.end();
 		switch (curLevelState) {
-		case Level_Loading:
+		case LevelLoading:
 			renderLevelLoading();
 			break;
-		case Level_Play:
+		case LevelPlay:
 			renderLevelPlay();
 			break;
-		case Level_Failed:
+		case LevelFailed:
 			renderLevelFailed();
 			break;
-		case Level_Complete:
+		case LevelComplete:
 			renderLevelComplete();
 			break;
-		case Level_Shop:
+		case LevelShop:
 			renderLevelShop();
 			break;
 		default:
@@ -86,20 +96,26 @@ public class LevelX implements Screen{
 		// TODO Auto-generated method stub
 		Gdx.app.log("LevelX", "update()");
 		
+//		curLevelState = (curLevelState != nextLevelState) ? nextLevelState : curLevelState;
+		
+		if (curLevelState != nextLevelState) {
+			curLevelState = nextLevelState;
+		}
+		
 		switch (curLevelState) {
-		case Level_Loading:
+		case LevelLoading:
 			updateLevelLoading();
 			break;
-		case Level_Play:
+		case LevelPlay:
 			updateLevelPlay();
 			break;
-		case Level_Failed:
+		case LevelFailed:
 			updateLevelFailed();
 			break;
-		case Level_Complete:
+		case LevelComplete:
 			updateLevelComplete();
 			break;
-		case Level_Shop:
+		case LevelShop:
 			updateLevelShop();
 			break;
 		default:
@@ -125,7 +141,7 @@ public class LevelX implements Screen{
 	public boolean isDone() {
 		// TODO Auto-generated method stub
 		Gdx.app.log("LevelX", "isDone()");
-		return Gdx.input.isTouched();
+		return isDone;
 	}
 
 	@Override
@@ -136,22 +152,51 @@ public class LevelX implements Screen{
 
 	private void updateLevelLoading() {
 		Gdx.app.log("LevelX", "updateLevelLoading()");
+		switchLevelState(LevelState.LevelPlay);
 	}
 	
 	private void updateLevelPlay() {
 		Gdx.app.log("LevelX", "updateLevelPlay()");
+		switch (levelPlayResult) {
+		case 0:
+			switchLevelState(LevelState.LevelFailed);
+			++levelPlayResult;
+			break;
+		case 1:
+			switchLevelState(LevelState.LevelComplete);
+			++levelPlayResult;
+			break;
+		case 2:
+			switchLevelState(LevelState.LevelFailed);
+		default:
+			break;
+		}
 	}
 
 	private void updateLevelFailed() {
 		Gdx.app.log("LevelX", "updateLevelFailed()");
+		switch (levelFailedChoice) {
+		case 0:
+			switchLevelState(LevelState.LevelPlay);
+			++levelFailedChoice;
+			break;
+		case 1:
+			Gdx.app.log("LevelX", "Exit Level after failed!");
+			isDone = true;
+			break;
+		default:
+			break;
+		}
 	}
 
 	private void updateLevelComplete() {
 		Gdx.app.log("LevelX", "updateLevelComplete()");
+		switchLevelState(LevelState.LevelShop);
 	}
 
 	private void updateLevelShop() {
 		Gdx.app.log("LevelX", "updateLevelShop()");
+		switchLevelState(LevelState.LevelLoading);
 	}
 	
 	private void renderLevelLoading() {
@@ -172,5 +217,10 @@ public class LevelX implements Screen{
 
 	private void renderLevelShop() {
 		Gdx.app.log("LevelX", "renderLevelShop()");
+	}
+	
+	private void switchLevelState(LevelState levelState) {
+		Gdx.app.log("LevelX", "switchLevelState()");
+		nextLevelState = levelState;
 	}
 }
