@@ -30,7 +30,7 @@ public class MainMenu implements Screen{
 		isDone = false;
 		
 		spriteBatch = new SpriteBatch();
-		background = new Texture(Gdx.files.internal("data/background.png"));
+		background = new Texture(Gdx.files.internal("data/menus/background.png"));
 		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		font = new BitmapFont(Gdx.files.internal("data/font16.fnt"), Gdx.files.internal("data/font16.png"), false);

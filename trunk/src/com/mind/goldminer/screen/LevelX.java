@@ -1,6 +1,16 @@
 package com.mind.goldminer.screen;
 
+import java.util.ArrayList;
+
+import javax.microedition.khronos.opengles.GL10;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 
 public class LevelX implements Screen{
 
@@ -10,8 +20,12 @@ public class LevelX implements Screen{
 							LevelPlay, 
 							LevelFailed,
 							LevelComplete, 
-							LevelShop,
+							LevelShop
 							};
+							
+	private enum LoadingSteps { Step0, 
+								Step1,
+								Step2 };
 	
 	private LevelState			curLevelState;
 	private LevelState			nextLevelState;
@@ -20,14 +34,18 @@ public class LevelX implements Screen{
 	
 	private int 				levelPlayResult;
 	private int 				levelFailedChoice;
-							
-//	private final SpriteBatch 	spriteBatch;
-//	private final Texture 		background;
-//	private final Texture		miner;
-//	private final Texture		gold;
-//	
-//	private final Matrix4		viewMatrix;
-//	private final Matrix4		transformMatrix;
+	
+	private final SpriteBatch	spriteBatch;
+	private final Texture		loadingBackground;
+	private final BitmapFont	font;
+
+	private final Matrix4		viewMatrix;
+	private final Matrix4		transformMatrix;
+	
+	private ArrayList<Texture>		golds;
+	private ArrayList<Texture>		stones;
+	private int[]					leveldatas;
+	private LoadingSteps			loadingStep;
 	
 	public LevelX() {
 		Gdx.app.log("LevelX", "LevelX()");
@@ -35,41 +53,38 @@ public class LevelX implements Screen{
 		curLevelState = LevelState.LevelLoading;
 		nextLevelState = LevelState.LevelLoading;
 		
+		loadingStep = LoadingSteps.Step0;
+		
+		golds = new ArrayList<Texture>();
+		stones = new ArrayList<Texture>();
+		
 		isDone = false;
 		
 		levelPlayResult = 0;
 		levelFailedChoice = 0;
 		
-//		spriteBatch = new SpriteBatch();
-//		background = new Texture(Gdx.files.internal("data/background.png"));
-//		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-//		miner = new Texture(Gdx.files.internal("data/miner.png"));
-//		miner.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-//		gold = new Texture(Gdx.files.internal("data/gold.png"));
-//		gold.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		spriteBatch = new SpriteBatch();
+		loadingBackground = new Texture(Gdx.files.internal("data/levels/loadingbackground.jpg"));
+		loadingBackground.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-//		viewMatrix = new Matrix4();
-//		transformMatrix = new Matrix4();
+		font = new BitmapFont(Gdx.files.internal("data/font16.fnt"), Gdx.files.internal("data/font16.png"), false);
+		
+		viewMatrix = new Matrix4();
+		transformMatrix = new Matrix4();
 	}
 	
 	@Override
 	public void render() {
 		// TODO Auto-generated method stub
 		Gdx.app.log("LevelX", "render()");
-//		Application app = Gdx.app;
-//		
-//		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-//		
-//		viewMatrix.setToOrtho2D(0, 0, 800, 480);
-//		spriteBatch.setProjectionMatrix(viewMatrix);
-//		spriteBatch.setTransformMatrix(transformMatrix);
-//		spriteBatch.begin();
-//		spriteBatch.disableBlending();
-//		spriteBatch.draw(background, 0, 0, 800, 480, 0, 0, 512, 512, false, false);
-//		spriteBatch.enableBlending();
-//		spriteBatch.draw(miner, 400, 400);
-//		spriteBatch.draw(gold, 300, 200);
-//		spriteBatch.end();
+		
+		Gdx.app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		viewMatrix.setToOrtho2D(0, 0, 800, 480);
+		spriteBatch.setProjectionMatrix(viewMatrix);
+		spriteBatch.setTransformMatrix(transformMatrix);
+		spriteBatch.begin();
+		
 		switch (curLevelState) {
 		case LevelLoading:
 			renderLevelLoading();
@@ -89,6 +104,8 @@ public class LevelX implements Screen{
 		default:
 			break;
 		}
+		
+		spriteBatch.end();
 	}
 
 	@Override
@@ -152,7 +169,27 @@ public class LevelX implements Screen{
 
 	private void updateLevelLoading() {
 		Gdx.app.log("LevelX", "updateLevelLoading()");
-		switchLevelState(LevelState.LevelPlay);
+		switch (loadingStep) {
+		case Step0:
+			for (int i = 0; i < 3; ++i) {
+				golds.add(new Texture(Gdx.files.internal("data/levels/gold"+i+".png")));
+				golds.get(i).setFilter(TextureFilter.Linear, TextureFilter.Linear);	
+			}
+			loadingStep = LoadingSteps.Step1;
+			break;
+		case Step1:
+			for (int i = 0; i < 2; ++i) {
+				stones.add(new Texture(Gdx.files.internal("data/levels/stone"+i+".png")));
+				stones.get(i).setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			}
+			loadingStep = LoadingSteps.Step2;
+			break;
+		case Step2:
+			switchLevelState(LevelState.LevelPlay);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	private void updateLevelPlay() {
@@ -201,6 +238,15 @@ public class LevelX implements Screen{
 	
 	private void renderLevelLoading() {
 		Gdx.app.log("LevelX", "renderLevelLoading()");
+		
+		spriteBatch.setColor(Color.WHITE);
+		spriteBatch.disableBlending();
+		spriteBatch.draw(loadingBackground, 0, 0, 800, 480, 0, 0, 512, 512, false, false);
+		spriteBatch.enableBlending();
+		String text = "Loading........";
+		int width = font.getBounds(text).width;
+		font.setColor(Color.RED);
+		font.draw(spriteBatch, text, 400-width/2, 128);
 	}
 	
 	private void renderLevelPlay() {
