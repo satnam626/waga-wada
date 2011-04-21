@@ -44,6 +44,7 @@ public class LevelX implements Screen{
 	
 	private ArrayList<Texture>		golds;
 	private ArrayList<Texture>		stones;
+	private Texture					levelPlayBackground;
 	private int[]					leveldatas;
 	private LoadingSteps			loadingStep;
 	
@@ -185,6 +186,7 @@ public class LevelX implements Screen{
 			loadingStep = LoadingSteps.Step2;
 			break;
 		case Step2:
+			levelPlayBackground = new Texture(Gdx.files.internal("data/levels/levelplaybackground.png"));
 			switchLevelState(LevelState.LevelPlay);
 			break;
 		default:
@@ -194,20 +196,7 @@ public class LevelX implements Screen{
 	
 	private void updateLevelPlay() {
 		Gdx.app.log("LevelX", "updateLevelPlay()");
-		switch (levelPlayResult) {
-		case 0:
-			switchLevelState(LevelState.LevelFailed);
-			++levelPlayResult;
-			break;
-		case 1:
-			switchLevelState(LevelState.LevelComplete);
-			++levelPlayResult;
-			break;
-		case 2:
-			switchLevelState(LevelState.LevelFailed);
-		default:
-			break;
-		}
+		
 	}
 
 	private void updateLevelFailed() {
@@ -251,6 +240,19 @@ public class LevelX implements Screen{
 	
 	private void renderLevelPlay() {
 		Gdx.app.log("LevelX", "renderLevelPlay()");
+		
+		spriteBatch.setColor(Color.WHITE);
+		spriteBatch.disableBlending();
+		spriteBatch.draw(levelPlayBackground, 0, 0, 800, 480, 0, 0, 512, 512, false, false);
+		spriteBatch.enableBlending();
+		
+		for (int i = 0, size = golds.size(); i < size; ++i) {
+			spriteBatch.draw(golds.get(i), (i+1)*200, (i+1)*30);
+		}
+		
+		for (int i = 0, size = stones.size(); i < size; ++i) {
+			spriteBatch.draw(stones.get(i), (i+1)*233, (i+1)*10);
+		}
 	}
 
 	private void renderLevelFailed() {
